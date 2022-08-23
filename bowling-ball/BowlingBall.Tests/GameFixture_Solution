@@ -1,0 +1,86 @@
+using System;
+using System.Security.Policy;
+using NUnit.Framework;
+namespace BowlingBall.Tests
+{
+    [TestFixture]
+    public class GameFixture
+    {
+        [Test]
+        public void TestAllGutters()
+        {
+            var game = new Game();
+            Roll(game, 0, 20);
+            Assert.AreEqual(0, game.GetScore());
+        }
+
+        [Test]
+        public void TestAllOnes()
+        {
+            var game = new Game();
+            Roll(game, 1, 20);
+            Assert.AreEqual(20, game.GetScore());
+        }
+
+        [Test]
+        public void TestOneSpare()
+        {
+            var game = new Game();
+            game.Roll(6);
+            game.Roll(4);
+            game.Roll(4);
+            Roll(game, 0,17);
+            Assert.AreEqual(18, game.GetScore());
+        }
+
+        [Test]
+        public void TestOneStrike()
+        {
+            var game = new Game();
+            game.Roll(10);
+            game.Roll(4);
+            game.Roll(5);
+            Roll(game, 0, 16);
+            Assert.AreEqual(28, game.GetScore());
+        }
+
+        [Test]
+        public void TestPerfectGame()
+        {
+            var game = new Game();
+            Roll(game, 10, 12);
+            Assert.AreEqual(300, game.GetScore());
+        }
+
+        [Test]
+        public void TestGameWithoutExtraRoll()
+        {
+            var game = new Game();
+            game.Roll(new int[] { 1, 3, 7, 3, 10, 1, 7, 5, 2, 5, 3, 8, 2, 8, 2, 10, 9, 0 });
+            Assert.AreEqual(131, game.GetScore());
+        }
+
+        [Test]
+        public void TestGameWithSpareThenStrikeAtEnd()
+        {
+            var game = new Game();
+            game.Roll(new int[] { 1, 3, 7, 3, 10, 1, 7, 5, 2, 5, 3, 8, 2, 8, 2, 10, 9, 1, 10 });
+            Assert.AreEqual(143, game.GetScore());
+        }
+
+        [Test]
+        public void TestGameWithThreeStrikesAtEnd()
+        {
+            var game = new Game();
+            game.Roll(new int[] { 1, 3, 7, 3, 10, 1, 7, 5, 2, 5, 3, 8, 2, 8, 2, 10, 10, 10, 10 });
+            Assert.AreEqual(163, game.GetScore());
+        }
+        private static void Roll(Game game, int pins, int times)
+        {
+            for (var i = 0; i < times; i++)
+            {
+                game.Roll(pins);
+            }
+        }
+    }
+}
